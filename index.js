@@ -79,23 +79,37 @@ client.on('message', async message => {
             });
         }
     } else if (message.author.id === '408785106942164992') {
-        if (message.content.includes('I WILL BE BACK IN')) {
+        if (message.content.includes('I WILL BE BACK IN') && message.content.includes('YOU SPENT')) { //without the second argument it triggers also if u check when the hb returns
             //then it's huntbot
             const i = message.content.indexOf('I WILL BE BACK IN')
             const start = i + 18
+            const hoursExist = (() => {
+                if (message.content.charAt(start + 1) === 'H' || message.content.charAt(start + 2) === 'H') {
+                    return true;
+                } else {
+                    return false;
+                }
+            })()
             let hoursString = message.content.charAt(start)
             let indexForMinutes = start + 2
             if (!isNaN(Number(message.content.charAt(start + 1)))) {
                 hoursString += message.content.charAt(start + 1)
                 indexForMinutes++;
             }
-            const hours = Number(hoursString);
+            let hours;
+            let minutes;
+            if (!hoursExist) {
+                hours = 0;
+                minutes = Number(hoursString);
+            } else {
+                hours = Number(hoursString);
 
-            let minutesString = message.content.charAt(indexForMinutes)
-            if (!isNaN(Number(message.content.charAt(indexForMinutes + 1)))) {
-                minutesString += message.content.charAt(indexForMinutes + 1)
+                let minutesString = message.content.charAt(indexForMinutes)
+                if (!isNaN(Number(message.content.charAt(indexForMinutes + 1)))) {
+                    minutesString += message.content.charAt(indexForMinutes + 1)
+                }
+                minutes = Number(minutesString);
             }
-            const minutes = Number(minutesString);
 
             const hoursMilli = hours * 3600000
             const minsMilli = minutes * 60000
