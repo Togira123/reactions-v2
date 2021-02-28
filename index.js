@@ -18,9 +18,8 @@ client.once('ready', () => {
 const cooldowns = new Discord.Collection();
 
 client.on('message', async message => {
-    if (message.author.bot && message.author.id !== '408785106942164992') return;
 
-    if (!message.content.toLowerCase().startsWith(config.owoprefix) && !message.content.toLowerCase().startsWith(config.prefix)) return;
+    if (!message.content.toLowerCase().startsWith(config.owoprefix) && !message.content.toLowerCase().startsWith(config.prefix) && message.author.bot && message.author.id !== '408785106942164992') return;
 
 
     if (message.content.toLowerCase().startsWith(config.owoprefix)) {
@@ -69,7 +68,6 @@ client.on('message', async message => {
         const command = args.shift().toLowerCase();
 
         if (command === 'prefix') {
-            console.log('entered')
             const newPrefix = JSON.parse(fs.readFileSync('./config.json', 'utf8'));
 
             newPrefix['owoprefix'] = args[0]
@@ -111,11 +109,22 @@ client.on('message', async message => {
                 minutes = Number(minutesString);
             }
 
+            //now get the user that sent the huntbot
+            const j = message.content.indexOf('BEEP BOOP. ')
+            const indexNameStart = j + 15 
+            const indexNameEnd = message.content.indexOf(',') - 4
+            const nameLength = indexNameEnd - indexNameStart;
+            let username = ''
+            for (let i = 0; i < nameLength; i++) {
+                username += message.content.charAt(indexNameStart + i)
+            }
+            const queryMember= await message.guild.members.fetch({ query: username, limit: 1 });
+            const member = queryMember.first()
             const hoursMilli = hours * 3600000
             const minsMilli = minutes * 60000
             const millis = hoursMilli + minsMilli
             await sleep(millis)
-            message.author.send('Yay, this worked!! Also, your huntbot is finished! Lets hope it\'s something good!')
+            await member.send('Yay, this worked!! Also, your huntbot is finished! Lets hope it\'s something good!')
         }
     }
 })
