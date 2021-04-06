@@ -111,20 +111,24 @@ client.on('message', async message => {
 
             //now get the user that sent the huntbot
             const j = message.content.indexOf('BEEP BOOP. ')
-            const indexNameStart = j + 15 
+            const indexNameStart = j + 15
             const indexNameEnd = message.content.indexOf(',') - 4
             const nameLength = indexNameEnd - indexNameStart;
             let username = ''
             for (let i = 0; i < nameLength; i++) {
                 username += message.content.charAt(indexNameStart + i)
             }
-            const queryMember= await message.guild.members.fetch({ query: username, limit: 1 });
+            const queryMember = await message.guild.members.fetch({ query: username, limit: 1 });
             const member = queryMember.first()
             const hoursMilli = hours * 3600000
             const minsMilli = minutes * 60000
             const millis = hoursMilli + minsMilli
             await sleep(millis)
-            await member.send('Yay, this worked!! Also, your huntbot is finished! Lets hope it\'s something good!')
+            try {
+                await member.send('Yay, this worked!! Also, your huntbot is finished! Lets hope it\'s something good!')
+            } catch {
+                console.log('failed to dm user :(')
+            }
         }
     }
 })
