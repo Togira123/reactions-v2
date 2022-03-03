@@ -1,31 +1,29 @@
-const Discord = require('discord.js')
-const config = require('./config.json')
-const fs = require('fs')
+import Discord from 'discord.js';
+import config from './config.json';
+import fs from 'fs';
 
 const client = new Discord.Client({
     presence: {
-        activity: {
+        activities: [{
             name: 'carlon\'s owo commands',
             type: 'WATCHING',
-        }
-    }
+        }]
+    },
+    intents: [Discord.Intents.FLAGS.GUILD_MESSAGES, Discord.Intents.FLAGS.GUILDS]
 });
 
 client.once('ready', () => {
     console.log('Bot is online!')
 })
 
-const cooldowns = new Discord.Collection();
+const cooldowns = new Discord.Collection<string, Set<string>>();
 
-client.on('message', async message => {
+client.on('messageCreate', async message => {
 
     if (!message.content.toLowerCase().startsWith(config.owoprefix) && !message.content.toLowerCase().startsWith(config.prefix) && message.author.bot && message.author.id !== '408785106942164992') return;
 
 
     if (message.content.toLowerCase().startsWith(config.owoprefix)) {
-        /**
-         * @type {Array<String>}
-         */
         const args = message.content.slice(config.owoprefix.length).trim().split(' ');
         const command = args.shift().toLowerCase();
 
@@ -33,10 +31,7 @@ client.on('message', async message => {
             if (!cooldowns.has(message.author.id)) {
                 cooldowns.set(message.author.id, new Set())
             }
-            /**
-             * @type {Set}
-             */
-            const timeouts = cooldowns.get(message.author.id)
+            const timeouts = cooldowns.get(message.author.id);
 
             if (!timeouts.has('huntOrBattle')) {
                 timeouts.add('huntOrBattle')
@@ -48,9 +43,6 @@ client.on('message', async message => {
             if (!cooldowns.has(message.author.id)) {
                 cooldowns.set(message.author.id, new Set())
             }
-            /**
-             * @type {Set}
-             */
             const timeouts = cooldowns.get(message.author.id)
 
             if (!timeouts.has('curseOrPray')) {
@@ -61,9 +53,6 @@ client.on('message', async message => {
             }
         }
     } else if (message.content.toLowerCase().startsWith(config.prefix)) {
-        /**
-         * @type {Array<String>}
-         */
         const args = message.content.slice(config.prefix.length).trim().split(' ');
         const command = args.shift().toLowerCase();
 
